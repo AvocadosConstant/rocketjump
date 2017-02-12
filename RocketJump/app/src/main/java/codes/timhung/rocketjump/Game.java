@@ -13,9 +13,7 @@ import android.view.SurfaceHolder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Random;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Created by Tim Hung on 2/11/2017.
@@ -44,6 +42,8 @@ public class Game {
     int rocketCD;
 
     long elevation;
+    private final int NUM_PLATS_PER_SCREEN = 4;
+    private int PLAT_SPACING;
     private int SCROLL_THRESH;
 
     public Game(Context context, Rect screen, SurfaceHolder holder, Resources resources) {
@@ -51,6 +51,7 @@ public class Game {
         this.screen = screen;
         this.holder = holder;
         this.resources = resources;
+        PLAT_SPACING = screen.height() / NUM_PLATS_PER_SCREEN;
 
         player = new Player( null, new Rect(
                         screen.width()/2,
@@ -60,7 +61,7 @@ public class Game {
                 screen);
 
         platforms = new LinkedList<>();
-        spawnPlatforms(12, 400, 40, 320);
+        spawnPlatforms(12, 400, 40);
         rockets = new ArrayList<>();
         explosions = new ArrayList<>();
         canFire = false;
@@ -69,11 +70,11 @@ public class Game {
         SCROLL_THRESH = screen.width() / 2 + player.getHeight();
     }
 
-    public void spawnPlatforms(int num, int width, int height, int spacing) {
+    public void spawnPlatforms(int num, int width, int height) {
         Random rng = new Random();
         int nextY = screen.bottom - 600;
         for(int i = 0; i < num; i++) {
-            if(platforms.size() > 0) nextY = (int) platforms.peekLast().getY() - spacing;
+            if(platforms.size() > 0) nextY = (int) platforms.peekLast().getY() - PLAT_SPACING;
             platforms.add(new Platform(
                     null, screen,
                     screen.left + rng.nextInt(screen.width() - width - 1) + 1,
@@ -137,12 +138,8 @@ public class Game {
             // Calculate platform position
             for(Platform plat : platforms) {
                 // Player is on a platform
-                if(player.vy >= 0
-                        && player.getX() <= plat.getRight()
-                        && player.getRight() >= plat.getX()
-                        && player.getBottom() >= plat.getY() - 10
-                        && player.getBottom() <= plat.getY() + 10
-                        /*&& Rect.intersects(player.getHitbox(), plat.getHitbox())*/){
+                if(player.vy >= 0 && (plat.getHitbox().contains((int) player.getX(), (int) player.getBottom())
+                || plat.getHitbox().contains((int) player.getRight(), (int) player.getBottom()))){
                     player.setY(plat.getY() - player.getHeight());
                     player.vy = 0;
                     player.setX(player.getX() + plat.vx);
@@ -163,7 +160,7 @@ public class Game {
             if(platforms.peekFirst().getY() > screen.bottom) {
                 Log.d("UPDATE", "generating new platform");
                 platforms.poll();
-                spawnPlatforms(1, 400, 40, 320);
+                spawnPlatforms(1, 400, 40);
             }
         }
     }

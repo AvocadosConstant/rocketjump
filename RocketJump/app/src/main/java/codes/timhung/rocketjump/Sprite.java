@@ -33,8 +33,8 @@ public class Sprite {
     public double ax;
     public double ay;
 
-    public final double FRIC = 1;
-    public final double GRAV = 1.4;
+    public final double FRIC = 3;
+    public final double GRAV = 1;
     public boolean affectedByGrav = false;
 
     public Sprite(Bitmap image, Rect hitbox, Rect screen) {

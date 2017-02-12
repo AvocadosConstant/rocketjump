@@ -52,9 +52,9 @@ public class Player extends Sprite {
 
     public void applyFrictionX() {
         if(this.vx > 1) {
-            this.ax = -FRIC;
+            this.ax = (this.vx > FRIC) ? -FRIC : this.vx;
         } else if(this.vx < -1) {
-            this.ax = FRIC;
+            this.ax = (this.vx < -FRIC) ? FRIC : this.vx;
         } else {
             this.ax = 0;
             this.vx = 0;
