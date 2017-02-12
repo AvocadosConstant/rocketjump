@@ -9,6 +9,9 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 /**
  * Created by Tim Hung on 2/11/2017.
  */
@@ -19,6 +22,7 @@ public class Game {
         PAUSED, RUNNING
     }
 
+    private final int EXPLOSION_RADIUS = 180;
     private Context context;
     private SurfaceHolder holder;
     private Rect screen;
@@ -28,6 +32,10 @@ public class Game {
     private Sprite testSprite;
     private Player player;
     private Platform plat1;
+
+    private ArrayList<Explosion> explosions;
+    boolean canFire;
+    int rocketCD;
 
     public Game(Context context, Rect screen, SurfaceHolder holder, Resources resources) {
         this.context = context;
@@ -60,6 +68,9 @@ public class Game {
                 400,
                 40
                 );
+        explosions = new ArrayList<>();
+        canFire = false;
+        rocketCD = 0;
     }
 
     public void init() {
@@ -67,8 +78,22 @@ public class Game {
 
     public void onTouchEvent(MotionEvent event) {
         if (state == GameState.RUNNING) {
-            testSprite.setX(event.getX());
-            testSprite.setY(event.getY());
+            //testSprite.setX(event.getX());
+            //testSprite.setY(event.getY());
+            if(canFire) {
+                explosions.add(new Explosion(
+                        null,
+                        new Rect(
+                                (int) event.getX() - EXPLOSION_RADIUS,
+                                (int) event.getY() - EXPLOSION_RADIUS,
+                                (int) event.getX() + EXPLOSION_RADIUS,
+                                (int) event.getY() + EXPLOSION_RADIUS
+                        ),
+                        screen
+                ));
+                canFire = false;
+                rocketCD = 0;
+            }
 
             if(event.getX() < screen.centerX()) {
                 player.applyForce(-8, -20);
@@ -88,6 +113,14 @@ public class Game {
             // Check hitboxes etc
 
             // Update positions and hitboxes
+            rocketCD++;
+            if(rocketCD > 20) canFire = true;
+            Iterator<Explosion> i = explosions.iterator();
+            while (i.hasNext()) {
+                Explosion exp = i.next(); // must be called before you can call i.remove()
+                if(!exp.live) i.remove();
+                else exp.update(elapsed);
+            }
             testSprite.update(elapsed);
             player.update(elapsed);
             plat1.update(elapsed);
@@ -126,6 +159,7 @@ public class Game {
         borderPaint.setStyle(Paint.Style.STROKE);
         canvas.drawRect(screen, borderPaint);
 
+        for(Explosion exp : explosions) exp.draw(canvas);
         plat1.draw(canvas);
         player.draw(canvas);
         testSprite.draw(canvas);

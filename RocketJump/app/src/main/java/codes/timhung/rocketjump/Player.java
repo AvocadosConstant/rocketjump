@@ -30,7 +30,7 @@ public class Player extends Sprite {
             // Reflect player
             this.vx *= -.8;
         }
-        Log.d("PLAYER", "vx: " + vx + " | ax: " + ax);
+        //Log.d("PLAYER", "vx: " + vx + " | ax: " + ax);
         //Log.d("PLAYER", "vy: " + vy + " | ay: " + ay);
 
         super.update(elapsed);
