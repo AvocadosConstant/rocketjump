@@ -36,8 +36,8 @@ public class Player extends Sprite {
         }
         //Log.d("PLAYER", "vx: " + vx + " | ax: " + ax);
         //Log.d("PLAYER", "vy: " + vy + " | ay: " + ay);
-        Log.d("PLAYER", "height: " + this.getHeight() + " | width: " + this.getWidth());
-        Log.d("PLAYER", "HBheight: " + this.getHitbox().height() + " | HBwidth: " + this.getHitbox().width());
+        //Log.d("PLAYER", "height: " + this.getHeight() + " | width: " + this.getWidth());
+        //Log.d("PLAYER", "HBheight: " + this.getHitbox().height() + " | HBwidth: " + this.getHitbox().width());
 
         super.update(elapsed);
 

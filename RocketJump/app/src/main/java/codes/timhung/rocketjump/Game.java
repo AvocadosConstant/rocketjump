@@ -23,6 +23,7 @@ public class Game {
         PAUSED, RUNNING
     }
 
+    private final int ROCKET_RADIUS = 40;
     private final int EXPLOSION_RADIUS = 180;
     private Context context;
     private SurfaceHolder holder;
@@ -34,6 +35,7 @@ public class Game {
     private Player player;
     private Platform plat1;
 
+    private ArrayList<Rocket> rockets;
     private ArrayList<Explosion> explosions;
     boolean canFire;
     int rocketCD;
@@ -69,6 +71,7 @@ public class Game {
                 400,
                 40
                 );
+        rockets = new ArrayList<>();
         explosions = new ArrayList<>();
         canFire = false;
         rocketCD = 0;
@@ -79,19 +82,29 @@ public class Game {
 
     public void onTouchEvent(MotionEvent event) {
         if (state == GameState.RUNNING) {
-            //testSprite.setX(event.getX());
-            //testSprite.setY(event.getY());
+            testSprite.setX(event.getX());
+            testSprite.setY(event.getY());
+
+            // Fire a rocket from the player to the event location
             if(canFire) {
-                explosions.add(new Explosion(
+                // Calculate rocket trajectory vector
+                Log.d("ONTOUCH", "Spawning rocket");
+                double vx = event.getX() - player.getHitbox().centerX();
+                double vy = event.getY() - player.getHitbox().centerY();
+                double length = Math.sqrt(vx * vx + vy * vy);
+                rockets.add(new Rocket(
                         null,
                         new Rect(
-                                (int) event.getX() - EXPLOSION_RADIUS,
-                                (int) event.getY() - EXPLOSION_RADIUS,
-                                (int) event.getX() + EXPLOSION_RADIUS,
-                                (int) event.getY() + EXPLOSION_RADIUS
+                                player.getHitbox().centerX() - ROCKET_RADIUS,
+                                player.getHitbox().centerY() - ROCKET_RADIUS,
+                                player.getHitbox().centerX() + ROCKET_RADIUS,
+                                player.getHitbox().centerY() + ROCKET_RADIUS
                         ),
-                        screen
+                        screen,
+                        vx / length,
+                        vy / length
                 ));
+
                 canFire = false;
                 rocketCD = 0;
             }
@@ -117,13 +130,46 @@ public class Game {
 
             // Update positions and hitboxes
             rocketCD++;
-            if(rocketCD > 10) canFire = true;
-            Iterator<Explosion> i = explosions.iterator();
-            while (i.hasNext()) {
-                Explosion exp = i.next(); // must be called before you can call i.remove()
-                if(!exp.live) i.remove();
+            if(rocketCD > 30) canFire = true;
+
+            // Iterate over the rockets
+            Iterator<Rocket> rIter = rockets.iterator();
+            while(rIter.hasNext()) {
+                Rocket rocket = rIter.next();
+                Log.d("ROCKET_COL", "(" + rocket.getX() + ", " + rocket.getY() + ")");
+                // If rocket collides with a solid object or goes off screen
+                if(Rect.intersects(rocket.getHitbox(), plat1.getHitbox())
+                        || rocket.getX() + ROCKET_RADIUS <= screen.left
+                        || rocket.getX() + ROCKET_RADIUS >= screen.right
+                        || rocket.getY() + ROCKET_RADIUS >= screen.bottom) {
+                    // Create an explosion at it's impact
+                    Log.d("UPDATE", "Rocket is exploding");
+                    rocket.exists = false;
+                    explosions.add(new Explosion(
+                            null,
+                            new Rect(
+                                    rocket.getHitbox().centerX() - EXPLOSION_RADIUS,
+                                    rocket.getHitbox().centerY() - EXPLOSION_RADIUS,
+                                    rocket.getHitbox().centerX() + EXPLOSION_RADIUS,
+                                    rocket.getHitbox().centerY() + EXPLOSION_RADIUS
+                            ),
+                            screen
+                    ));
+                    // Remove the rocket
+                    rIter.remove();
+                } else if(rocket.getY() + ROCKET_RADIUS <= screen.top - ROCKET_RADIUS * 3) {
+                    // Rocket is above the top of the screen
+                    rIter.remove();
+                } else rocket.update(elapsed); // Rocket is still flying
+            }
+
+            // Iterate over the explosions
+            Iterator<Explosion> eIter = explosions.iterator();
+            while (eIter.hasNext()) {
+                Explosion exp = eIter.next(); // must be called before you can call i.remove()
+                if(!exp.live) eIter.remove();
                 else {
-                    if(player.getHitbox().intersect(exp.getHitbox()) && exp.isForceful()) {
+                    if(Rect.intersects(player.getHitbox(), exp.getHitbox()) && exp.isForceful()) {
                         // Player is in explosion! Blast off!
                         double dx = player.getHitbox().centerX() - exp.getHitbox().centerX();
                         double dy = player.getHitbox().centerY() - exp.getHitbox().centerY();
@@ -174,6 +220,7 @@ public class Game {
         borderPaint.setStyle(Paint.Style.STROKE);
         canvas.drawRect(screen, borderPaint);
 
+        for(Rocket rocket: rockets) rocket.draw(canvas);
         for(Explosion exp : explosions) exp.draw(canvas);
         plat1.draw(canvas);
         player.draw(canvas);
