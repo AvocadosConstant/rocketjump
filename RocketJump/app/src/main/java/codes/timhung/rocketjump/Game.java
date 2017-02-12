@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -22,36 +21,45 @@ public class Game {
 
     private Context context;
     private SurfaceHolder holder;
-    private Rect screenBounds;
+    private Rect screen;
     private Resources resources;
     private GameState state = GameState.PAUSED;
 
     private Sprite testSprite;
     private Player player;
+    private Platform plat1;
 
-    public Game(Context context, Rect screenBounds, SurfaceHolder holder, Resources resources) {
+    public Game(Context context, Rect screen, SurfaceHolder holder, Resources resources) {
         this.context = context;
-        this.screenBounds = screenBounds;
+        this.screen = screen;
         this.holder = holder;
         this.resources = resources;
 
         testSprite = new Sprite(
                 null,
                 new Rect(
-                        screenBounds.width()/2,
-                        screenBounds.height()/2,
-                        screenBounds.width()/2 + 80,
-                        screenBounds.height()/2 + 160),
-                screenBounds);
+                        screen.width()/2,
+                        screen.height()/2,
+                        screen.width()/2 + 80,
+                        screen.height()/2 + 80),
+                screen);
 
         player = new Player(
                 null,
                 new Rect(
-                        screenBounds.width()/2,
-                        screenBounds.height()/2,
-                        screenBounds.width()/2 + 160,
-                        screenBounds.height()/2 + 320),
-                screenBounds);
+                        screen.width()/2,
+                        screen.height()/2,
+                        screen.width()/2 + 160,
+                        screen.height()/2 + 320),
+                screen);
+        plat1 = new Platform(
+                null,
+                screen,
+                screen.centerX(),
+                screen.centerY() + 200,
+                400,
+                40
+                );
     }
 
     public void init() {
@@ -61,6 +69,12 @@ public class Game {
         if (state == GameState.RUNNING) {
             testSprite.setX(event.getX());
             testSprite.setY(event.getY());
+
+            if(event.getX() < screen.centerX()) {
+                player.applyForce(-8, -20);
+            } else {
+                player.applyForce(8, -20);
+            }
         } else {
             state = GameState.RUNNING;
         }
@@ -73,14 +87,10 @@ public class Game {
         if(state == GameState.RUNNING){
             // Check hitboxes etc
 
-            // Check for player hitting bottom
-            if(player.getHitbox().bottom >= screenBounds.bottom) {
-                player.setY(screenBounds.bottom - player.getHeight());
-                player.vy = 0;
-            }
             // Update positions and hitboxes
             testSprite.update(elapsed);
             player.update(elapsed);
+            plat1.update(elapsed);
         }
     }
 
@@ -114,10 +124,10 @@ public class Game {
         borderPaint.setStrokeWidth(24);
         borderPaint.setColor(Color.GREEN);
         borderPaint.setStyle(Paint.Style.STROKE);
-        canvas.drawRect(screenBounds, borderPaint);
+        canvas.drawRect(screen, borderPaint);
 
-        testSprite.draw(canvas);
+        plat1.draw(canvas);
         player.draw(canvas);
-
+        testSprite.draw(canvas);
     }
 }
