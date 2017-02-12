@@ -7,7 +7,7 @@ package codes.timhung.rocketjump;
 public class GameThread extends Thread {
     private Game game;
     private volatile boolean running = true;
-    private final int FRAME_RATE = 1000;
+    private final int FRAME_RATE = 100;
 
     public GameThread(Game game) {
         this.game = game;

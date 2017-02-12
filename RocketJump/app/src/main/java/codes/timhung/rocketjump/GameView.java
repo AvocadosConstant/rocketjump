@@ -1,6 +1,7 @@
 package codes.timhung.rocketjump;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -26,7 +27,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         Log.d("GAMEVIEW", "created");
-        game = new Game(getContext(), getWidth(), getHeight(), holder, getResources());
+        game = new Game(
+                getContext(),
+                new Rect(0, 0, getWidth(), getHeight()),
+                holder,
+                getResources());
         gameThread = new GameThread(game);
         gameThread.start();
     }

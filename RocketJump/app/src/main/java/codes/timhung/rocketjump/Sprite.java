@@ -15,33 +15,65 @@ import android.util.Log;
  * Parent class of any sprite
  */
 public class Sprite {
+    public enum SpriteState {
+        IDLE, JUMP, FLY, LAND
+    }
+    private Bitmap image;
+    private Rect hitbox;
+    private Rect screenBounds;
+    private SpriteState spriteState;
+
+    private int width;
+    private int height;
     private float x;
     private float y;
 
-    private int screenWidth;
-    private int screenHeight;
+    public Sprite(Bitmap image, Rect hitbox, Rect screenBounds) {
+        this.image = image;
+        this.hitbox = hitbox;
+        this.screenBounds = screenBounds;
+        spriteState = SpriteState.IDLE;
 
-    private Bitmap image;
+        this.width = hitbox.width();
+        this.height = hitbox.height();
+        this.x = hitbox.left;
+        this.y = hitbox.top;
+    }
 
-    private Rect bounds;
-
-    public Sprite(int screenWidth, int screenHeight) {
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
+    public void update(long elapsed) {
     }
 
     public void draw(Canvas canvas) {
-        Paint paint = new Paint();
-        paint.setColor(Color.RED);
-        Log.d("SPRITE", "Drawing sprite at (" + x + ", " + y + ")");
-        canvas.drawRect(x, y, x + 80, y + 160, paint);
+        Log.d("SPRITE", "Drawing sprite at (" + hitbox.left + ", " + hitbox.top + ")");
+        if(image == null) {
+            // Handle null sprites
+            Paint borderPaint = new Paint();
+            borderPaint.setStrokeWidth(10);
+            borderPaint.setColor(Color.RED);
+            borderPaint.setStyle(Paint.Style.STROKE);
+            canvas.drawRect(hitbox, borderPaint);
+        }
     }
 
-    public int getScreenWidth() {return screenWidth;}
+    public Rect getHitbox() {
+        return hitbox;
+    }
 
-    public int getScreenHeight() {return screenHeight;}
+    public float getX() {return this.x;}
 
-    public void setX(float x) {this.x = x;}
+    public float getY() {return this.y;}
 
-    public void setY(float y) {this.y = y;}
+    public int getHeight() {return this.height;}
+
+    public int getWidth() {return this.width;}
+
+    public void setX(float x) {
+        this.x = x;
+        this.hitbox.offsetTo((int) this.x, (int) this.y);
+    }
+
+    public void setY(float y) {
+        this.y = y;
+        this.hitbox.offsetTo((int) this.x, (int) this.y);
+    }
 }
