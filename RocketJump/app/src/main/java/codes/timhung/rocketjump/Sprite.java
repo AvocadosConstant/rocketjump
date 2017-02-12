@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 
 /**
@@ -70,6 +71,7 @@ public class Sprite {
             // Draw image
         }
         drawHitbox(canvas, elevation, Color.MAGENTA);
+        drawVecs(canvas, elevation, 15);
     }
 
     public void drawHitbox(Canvas canvas, long elevation, int color) {
@@ -81,17 +83,35 @@ public class Sprite {
         canvas.drawRect(hitbox, borderPaint);
     }
 
+    public void drawVecs(Canvas canvas, long elevation, int scalar) {
+        Paint paint = new Paint();
+        // Draw velocities
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(8);
+        paint.setColor(Color.GREEN);
+        Path path = new Path();
+        path.moveTo(this.getHitbox().centerX(), this.getHitbox().centerY());
+        path.lineTo(this.getHitbox().centerX() + (int) vx * scalar,
+                this.getHitbox().centerY() + (int) vy * scalar);
+        path.close();
+        canvas.drawPath(path, paint);
+    }
+
     public Rect getHitbox() {
         return hitbox;
     }
+
+    public int getHeight() {return this.height;}
+
+    public int getWidth() {return this.width;}
 
     public double getX() {return this.x;}
 
     public double getY() {return this.y;}
 
-    public int getHeight() {return this.height;}
+    public double getRight() {return this.x + this.getWidth();}
 
-    public int getWidth() {return this.width;}
+    public double getBottom() {return this.y + this.getHeight();}
 
     public void setX(double x) {
         this.x = x;

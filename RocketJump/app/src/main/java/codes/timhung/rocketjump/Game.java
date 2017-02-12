@@ -122,8 +122,7 @@ public class Game {
      */
     public void update(Long elapsed) {
         if(state == GameState.RUNNING){
-            Log.d("UPDATE", "Elevation: " + elevation);
-
+            //Log.d("UPDATE", "Elevation: " + elevation);
 
             // Update positions and hitboxes
             rocketCD++;
@@ -136,18 +135,31 @@ public class Game {
             handleExplosions(elapsed);
 
             // Calculate platform position
-            for(Platform plat : platforms) plat.update(elapsed);
+            for(Platform plat : platforms) {
+                // Player is on a platform
+                if(player.vy >= 0
+                        && player.getX() <= plat.getRight()
+                        && player.getRight() >= plat.getX()
+                        && player.getBottom() >= plat.getY() - 10
+                        && player.getBottom() <= plat.getY() + 10
+                        /*&& Rect.intersects(player.getHitbox(), plat.getHitbox())*/){
+                    player.setY(plat.getY() - player.getHeight());
+                    player.vy = 0;
+                    player.setX(player.getX() + plat.vx);
+                    player.applyFrictionX();
+                    Log.d("PLAT_DET", "On a platform");
+                }
+                plat.update(elapsed);
+            }
 
             // Calculate player position
             player.update(elapsed);
 
+            // Update new elevation
             if(player.getY() < screen.bottom - SCROLL_THRESH) {
                 elevation += screen.bottom - player.getY() - SCROLL_THRESH;
             }
 
-            Log.d("UPDATE", platforms.size() + " platforms spawned");
-            Log.d("UPDATE", "Lowest platform is at y level " + platforms.peekFirst().getY());
-            Log.d("UPDATE", "Screen bottom is at y level " + screen.bottom);
             if(platforms.peekFirst().getY() > screen.bottom) {
                 Log.d("UPDATE", "generating new platform");
                 platforms.poll();
@@ -162,11 +174,29 @@ public class Game {
         while(rIter.hasNext()) {
             Rocket rocket = rIter.next();
             Log.d("ROCKET_COL", "(" + rocket.getX() + ", " + rocket.getY() + ")");
+            Platform plat = rocketHitPlatform(rocket);
             // If rocket collides with a solid object or goes off screen
-            if (//Rect.intersects(rocket.getHitbox(), plat.getHitbox())
-                    rocket.getX() + ROCKET_RADIUS <= screen.left
+            if(plat != null) {
+                // Collided with platform
+                // Create an explosion at it's impact
+                Log.d("UPDATE", "Rocket is exploding");
+                rocket.exists = false;
+                explosions.add(new Explosion(
+                        null,
+                        new Rect(
+                                rocket.getHitbox().centerX() - EXPLOSION_RADIUS,
+                                rocket.getHitbox().centerY() - EXPLOSION_RADIUS,
+                                rocket.getHitbox().centerX() + EXPLOSION_RADIUS,
+                                rocket.getHitbox().centerY() + EXPLOSION_RADIUS
+                        ),
+                        screen
+                ));
+                // Remove the rocket
+                rIter.remove();
+            } else if (rocket.getX() + ROCKET_RADIUS <= screen.left
                     || rocket.getX() + ROCKET_RADIUS >= screen.right
                     || rocket.getY() + ROCKET_RADIUS >= screen.bottom) {
+                // Collided with wall
                 // Create an explosion at it's impact
                 Log.d("UPDATE", "Rocket is exploding");
                 rocket.exists = false;
@@ -187,6 +217,12 @@ public class Game {
                 rIter.remove();
             } else rocket.update(elapsed); // Rocket is still flying
         }
+    }
+
+    public Platform rocketHitPlatform(Rocket rocket) {
+        for(Platform plat : platforms) {
+            if(Rect.intersects(rocket.getHitbox(), plat.getHitbox())) return plat;
+        } return null;
     }
 
     public void handleExplosions(Long elapsed) {
