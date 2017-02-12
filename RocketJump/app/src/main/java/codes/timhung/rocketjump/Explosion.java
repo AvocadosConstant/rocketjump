@@ -10,6 +10,8 @@ import android.util.Log;
 
 public class Explosion extends Sprite {
 
+    private final int DEATH_AGE = 30;
+    private final int FORCE_PERIOD = 10;
     private int lifeTime;
     boolean live;
 
@@ -22,6 +24,10 @@ public class Explosion extends Sprite {
     public void update(long elapsed) {
         lifeTime++;
         //Log.d("EXPLOSION", "lifetime: " + lifeTime);
-        if(lifeTime >= 40) live = false;
+        if(lifeTime >= DEATH_AGE) live = false;
+    }
+
+    public boolean isForceful() {
+        return lifeTime < FORCE_PERIOD;
     }
 }

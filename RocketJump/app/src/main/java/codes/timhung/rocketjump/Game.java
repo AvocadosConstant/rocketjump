@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -95,11 +96,13 @@ public class Game {
                 rocketCD = 0;
             }
 
+            /*
             if(event.getX() < screen.centerX()) {
                 player.applyForce(-8, -20);
             } else {
                 player.applyForce(8, -20);
             }
+            */
         } else {
             state = GameState.RUNNING;
         }
@@ -114,12 +117,24 @@ public class Game {
 
             // Update positions and hitboxes
             rocketCD++;
-            if(rocketCD > 20) canFire = true;
+            if(rocketCD > 10) canFire = true;
             Iterator<Explosion> i = explosions.iterator();
             while (i.hasNext()) {
                 Explosion exp = i.next(); // must be called before you can call i.remove()
                 if(!exp.live) i.remove();
-                else exp.update(elapsed);
+                else {
+                    if(player.getHitbox().intersect(exp.getHitbox()) && exp.isForceful()) {
+                        // Player is in explosion! Blast off!
+                        double dx = player.getHitbox().centerX() - exp.getHitbox().centerX();
+                        double dy = player.getHitbox().centerY() - exp.getHitbox().centerY();
+                        double length = Math.sqrt(dx * dx + dy * dy);
+                        dx *= 20 / length;
+                        dy *= 20 / length;
+                        Log.d("EXP_FORCE", "dx: " + dx + " | dy: " + dy);
+                        player.applyForce(dx, dy);
+                    }
+                    exp.update(elapsed);
+                }
             }
             testSprite.update(elapsed);
             player.update(elapsed);

@@ -94,11 +94,23 @@ public class Sprite {
 
     public void setX(double x) {
         this.x = x;
-        this.hitbox.offsetTo((int) this.x, (int) this.y);
+        //this.hitbox.offsetTo((int) this.x, (int) this.y);
+        this.getHitbox().set(
+                (int) x,
+                (int) y,
+                (int) x + this.getWidth(),
+                (int) y + this.getHeight()
+        );
     }
 
     public void setY(double y) {
         this.y = y;
-        this.hitbox.offsetTo((int) this.x, (int) this.y);
+        //this.hitbox.offsetTo((int) this.x, (int) this.y);
+        this.getHitbox().set(
+                (int) x,
+                (int) y,
+                (int) x + this.getWidth(),
+                (int) y + this.getHeight()
+        );
     }
 }

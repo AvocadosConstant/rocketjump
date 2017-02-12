@@ -25,13 +25,19 @@ public class Player extends Sprite {
             this.applyFrictionX();
         }
         // Check for player hitting side walls
-        if(this.getHitbox().left <= screen.left
-                || this.getHitbox().right >= screen.right) {
+        if(this.getHitbox().left <= screen.left) {
+            this.setX(screen.left + 1);
+            // Reflect player
+            this.vx *= -.8;
+        } else if(this.getHitbox().right >= screen.right) {
+            this.setX(screen.right - this.getWidth() - 1);
             // Reflect player
             this.vx *= -.8;
         }
         //Log.d("PLAYER", "vx: " + vx + " | ax: " + ax);
         //Log.d("PLAYER", "vy: " + vy + " | ay: " + ay);
+        Log.d("PLAYER", "height: " + this.getHeight() + " | width: " + this.getWidth());
+        Log.d("PLAYER", "HBheight: " + this.getHitbox().height() + " | HBwidth: " + this.getHitbox().width());
 
         super.update(elapsed);
 
