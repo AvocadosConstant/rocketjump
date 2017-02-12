@@ -15,7 +15,6 @@ public class GameThread extends Thread {
 
     @Override
     public void run() {
-        game.init();
         long lastTime = System.currentTimeMillis();
 
         // Game loop

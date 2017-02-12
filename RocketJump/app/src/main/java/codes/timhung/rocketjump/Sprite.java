@@ -33,7 +33,7 @@ public class Sprite {
     public double ay;
 
     public final double FRIC = 1;
-    public final double GRAV = 2;
+    public final double GRAV = 1.4;
     public boolean affectedByGrav = false;
 
     public Sprite(Bitmap image, Rect hitbox, Rect screen) {
@@ -64,19 +64,20 @@ public class Sprite {
         setY(this.getY() + vy);
     }
 
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, long elevation) {
         //Log.d("SPRITE", "Drawing sprite at (" + hitbox.left + ", " + hitbox.top + ")");
         if(image != null) {
             // Draw image
         }
-        drawHitbox(canvas, Color.MAGENTA);
+        drawHitbox(canvas, elevation, Color.MAGENTA);
     }
 
-    public void drawHitbox(Canvas canvas, int color) {
+    public void drawHitbox(Canvas canvas, long elevation, int color) {
         Paint borderPaint = new Paint();
         borderPaint.setStrokeWidth(10);
         borderPaint.setColor(color);
         borderPaint.setStyle(Paint.Style.STROKE);
+        this.setY(this.getY());// + elevation);
         canvas.drawRect(hitbox, borderPaint);
     }
 

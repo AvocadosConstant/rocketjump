@@ -34,6 +34,7 @@ public class Player extends Sprite {
             // Reflect player
             this.vx *= -.8;
         }
+        Log.d("PLAYER", "y: " + (this.getY() - getWidth()));
         //Log.d("PLAYER", "vx: " + vx + " | ax: " + ax);
         //Log.d("PLAYER", "vy: " + vy + " | ay: " + ay);
         //Log.d("PLAYER", "height: " + this.getHeight() + " | width: " + this.getWidth());
@@ -50,9 +51,9 @@ public class Player extends Sprite {
     }
 
     public void applyFrictionX() {
-        if(this.vx > 0) {
+        if(this.vx > 1) {
             this.ax = -FRIC;
-        } else if(this.vx < 0) {
+        } else if(this.vx < -1) {
             this.ax = FRIC;
         } else {
             this.ax = 0;

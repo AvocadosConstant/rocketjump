@@ -10,7 +10,7 @@ import android.graphics.Rect;
 
 public class Rocket extends Sprite {
 
-    public final double ROCKET_SPEED = 60;
+    public final double ROCKET_SPEED = 80;
     public boolean exists;
     public Rocket(Bitmap image, Rect hitbox, Rect screen, double vx, double vy) {
         super(image, hitbox, screen);
@@ -19,7 +19,7 @@ public class Rocket extends Sprite {
         exists = true;
     }
 
-    public void draw(Canvas canvas) {
-        if(exists) super.draw(canvas);
+    public void draw(Canvas canvas, long elevation) {
+        if(exists) super.draw(canvas, elevation);
     }
 }
