@@ -21,7 +21,6 @@ public class Explosion extends Sprite {
     private float angle;
     private int lifeTime;
     boolean live;
-    BitmapFactory.Options options = new BitmapFactory.Options();
     Bitmap[] bitmaps = new Bitmap[8];
 
     public Explosion(Bitmap image, Resources resources, Rect hitbox, Rect screen) {
@@ -29,7 +28,6 @@ public class Explosion extends Sprite {
         angle = (float)(Math.random() * 360);
         lifeTime = 0;
         live = true;
-        options.inScaled = false;
         bitmaps[0] = BitmapFactory.decodeResource(resources, R.drawable.explosion1, options);
         bitmaps[1] = BitmapFactory.decodeResource(resources, R.drawable.explosion2, options);
         bitmaps[2] = BitmapFactory.decodeResource(resources, R.drawable.explosion3, options);

@@ -2,6 +2,7 @@ package codes.timhung.rocketjump;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -24,6 +25,7 @@ public class Sprite {
     private Rect hitbox;
     public Rect screen;
     private SpriteState spriteState;
+    BitmapFactory.Options options = new BitmapFactory.Options();
 
     private int width;
     private int height;
@@ -45,6 +47,7 @@ public class Sprite {
         this.hitbox = hitbox;
         this.screen = screen;
         spriteState = SpriteState.IDLE;
+        options.inScaled = false;
 
         this.width = hitbox.width();
         this.height = hitbox.height();

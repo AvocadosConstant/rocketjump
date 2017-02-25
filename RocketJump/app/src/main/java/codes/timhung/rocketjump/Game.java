@@ -25,8 +25,9 @@ public class Game {
         PAUSED, RUNNING
     }
 
-    private final int ROCKET_WIDTH = 80;
+    private final int ROCKET_WIDTH = 160;
     private final int ROCKET_HEIGHT = 40;
+    private final int ROCKET_RADIUS = 40;
     private final int EXPLOSION_RADIUS = 180;
     private Context context;
     private SurfaceHolder holder;
