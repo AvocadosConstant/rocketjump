@@ -2,6 +2,7 @@ package codes.timhung.rocketjump;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 
 import java.util.Random;
@@ -23,6 +24,7 @@ public class Platform extends Sprite {
 
     public Platform(Bitmap image, Resources resources, Rect screen, int left, int top, int width, int height) {
         super(image, resources, new Rect( left, top, left + width, top + height), screen);
+        this.image = BitmapFactory.decodeResource(resources, R.drawable.platform, options);
         Random rng = new Random();
         this.vx = rng.nextInt(MAX_PLAT_SPEED * 2) - MAX_PLAT_SPEED;
     }
