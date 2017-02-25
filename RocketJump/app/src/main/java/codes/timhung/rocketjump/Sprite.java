@@ -72,9 +72,20 @@ public class Sprite {
         //Log.d("SPRITE", "Drawing sprite at (" + hitbox.left + ", " + hitbox.top + ")");
         if(image != null) {
             // Draw image
-        }
-        drawHitbox(canvas, elevation, Color.MAGENTA);
-        drawVecs(canvas, elevation, 15);
+            canvas.drawBitmap(image, null, this.getHitbox(), null);
+        } else drawHitbox(canvas, elevation, Color.MAGENTA);
+        //drawVecs(canvas, elevation, 15);
+    }
+
+    public void draw(Canvas canvas, long elevation, float angle) {
+        canvas.save();
+        canvas.rotate(angle, (float) (this.getX() + this.getWidth() / 2), (float) (this.getY() + this.getHeight() / 2));
+        if(image != null) {
+            // Draw image
+            canvas.drawBitmap(image, null, this.getHitbox(), null);
+        } else drawHitbox(canvas, elevation, Color.MAGENTA);
+        canvas.restore();
+        this.drawVecs(canvas, elevation, 15);
     }
 
     public void drawHitbox(Canvas canvas, long elevation, int color) {

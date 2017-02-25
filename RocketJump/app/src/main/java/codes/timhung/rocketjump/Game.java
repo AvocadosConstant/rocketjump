@@ -25,7 +25,8 @@ public class Game {
         PAUSED, RUNNING
     }
 
-    private final int ROCKET_RADIUS = 40;
+    private final int ROCKET_WIDTH = 80;
+    private final int ROCKET_HEIGHT = 40;
     private final int EXPLOSION_RADIUS = 180;
     private Context context;
     private SurfaceHolder holder;
@@ -102,10 +103,10 @@ public class Game {
             rockets.add(new Rocket(
                     null, resources,
                     new Rect(
-                            player.getHitbox().centerX() - ROCKET_RADIUS,
-                            player.getHitbox().centerY() - ROCKET_RADIUS,
-                            player.getHitbox().centerX() + ROCKET_RADIUS,
-                            player.getHitbox().centerY() + ROCKET_RADIUS
+                            player.getHitbox().centerX() - ROCKET_WIDTH,
+                            player.getHitbox().centerY() - ROCKET_HEIGHT,
+                            player.getHitbox().centerX() + ROCKET_WIDTH,
+                            player.getHitbox().centerY() + ROCKET_HEIGHT
                     ),
                     screen,
                     vx / length,
@@ -190,9 +191,9 @@ public class Game {
                 ));
                 // Remove the rocket
                 rIter.remove();
-            } else if (rocket.getX() + ROCKET_RADIUS <= screen.left
-                    || rocket.getX() + ROCKET_RADIUS >= screen.right
-                    || rocket.getY() + ROCKET_RADIUS >= screen.bottom) {
+            } else if (rocket.getX() + ROCKET_WIDTH <= screen.left
+                    || rocket.getX() + ROCKET_WIDTH >= screen.right
+                    || rocket.getY() + ROCKET_WIDTH >= screen.bottom) {
                 // Collided with wall
                 // Create an explosion at it's impact
                 Log.d("UPDATE", "Rocket is exploding");
@@ -209,7 +210,7 @@ public class Game {
                 ));
                 // Remove the rocket
                 rIter.remove();
-            } else if (rocket.getY() + ROCKET_RADIUS <= screen.top - ROCKET_RADIUS * 3) {
+            } else if (rocket.getY() + ROCKET_HEIGHT <= screen.top - ROCKET_HEIGHT * 3) {
                 // Rocket is above the top of the screen
                 rIter.remove();
             } else rocket.update(elapsed); // Rocket is still flying
@@ -279,7 +280,7 @@ public class Game {
         screen.offsetTo(screen.left, (int) -elevation);
         canvas.drawRect(screen, borderPaint);
 
-        for(Rocket rocket: rockets) rocket.draw(canvas, elevation);
+        for(Rocket rocket : rockets) rocket.draw(canvas, elevation);
         for(Explosion exp : explosions) exp.draw(canvas, elevation);
         for(Platform plat : platforms) plat.draw(canvas, elevation);
         player.draw(canvas, elevation);

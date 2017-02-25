@@ -8,6 +8,8 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
 
+import java.util.Random;
+
 /**
  * Created by Tim Hung on 2/11/2017.
  */
@@ -16,6 +18,7 @@ public class Explosion extends Sprite {
 
     private final int DEATH_AGE = 30;
     private final int FORCE_PERIOD = 10;
+    private float angle;
     private int lifeTime;
     boolean live;
     BitmapFactory.Options options = new BitmapFactory.Options();
@@ -23,6 +26,7 @@ public class Explosion extends Sprite {
 
     public Explosion(Bitmap image, Resources resources, Rect hitbox, Rect screen) {
         super(image, resources, hitbox, screen);
+        angle = (float)(Math.random() * 360);
         lifeTime = 0;
         live = true;
         options.inScaled = false;
@@ -40,7 +44,6 @@ public class Explosion extends Sprite {
 
     public void update(long elapsed) {
         Log.d("EXPLOSION_UPDATE", "Lifetime: " + lifeTime);
-        //if(lifeTime < bitmaps.length) this.image = bitmaps[lifeTime];
         lifeTime++;
         //Log.d("EXPLOSION", "lifetime: " + lifeTime);
         if(lifeTime >= DEATH_AGE) live = false;
@@ -50,7 +53,8 @@ public class Explosion extends Sprite {
         Log.d("EXPLOSION_DRAW", "Lifetime: " + lifeTime);
         //super.draw(canvas, elapsed);
         if(lifeTime < bitmaps.length * 2) {
-            canvas.drawBitmap(bitmaps[lifeTime / 2], null, this.getHitbox(), null);
+            this.image = bitmaps[lifeTime / 2];
+            super.draw(canvas, elapsed, angle);
         } else Log.d("EXPLOSION_DRAW", "Image is null!");
     }
 
