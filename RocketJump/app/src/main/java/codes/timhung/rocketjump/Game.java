@@ -275,9 +275,8 @@ public class Game {
 
         canvas.translate(0, elevation);
         Paint borderPaint = new Paint();
-        borderPaint.setStrokeWidth(24);
-        borderPaint.setColor(Color.GREEN);
-        borderPaint.setStyle(Paint.Style.STROKE);
+        borderPaint.setColor(Color.parseColor("#5c667a"));
+        borderPaint.setStyle(Paint.Style.FILL);
         screen.offsetTo(screen.left, (int) -elevation);
         canvas.drawRect(screen, borderPaint);
 

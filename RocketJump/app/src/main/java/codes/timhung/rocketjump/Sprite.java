@@ -88,7 +88,7 @@ public class Sprite {
             canvas.drawBitmap(image, null, this.getHitbox(), null);
         } else drawHitbox(canvas, elevation, Color.MAGENTA);
         canvas.restore();
-        this.drawVecs(canvas, elevation, 15);
+        //this.drawVecs(canvas, elevation, 15);
     }
 
     public void drawHitbox(Canvas canvas, long elevation, int color) {
