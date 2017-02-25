@@ -1,5 +1,6 @@
 package codes.timhung.rocketjump;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -18,7 +19,8 @@ public class Sprite {
     public enum SpriteState {
         IDLE, JUMP, FLY, LAND
     }
-    private Bitmap image;
+    public Bitmap image;
+    public Resources resources;
     private Rect hitbox;
     public Rect screen;
     private SpriteState spriteState;
@@ -37,8 +39,9 @@ public class Sprite {
     public final double GRAV = 1;
     public boolean affectedByGrav = false;
 
-    public Sprite(Bitmap image, Rect hitbox, Rect screen) {
+    public Sprite(Bitmap image, Resources resources, Rect hitbox, Rect screen) {
         this.image = image;
+        this.resources = resources;
         this.hitbox = hitbox;
         this.screen = screen;
         spriteState = SpriteState.IDLE;

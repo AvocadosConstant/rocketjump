@@ -1,5 +1,6 @@
 package codes.timhung.rocketjump;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.util.Log;
@@ -10,8 +11,8 @@ import android.util.Log;
 
 public class Player extends Sprite {
 
-    public Player(Bitmap image, Rect hitbox, Rect screen) {
-        super(image, hitbox, screen);
+    public Player(Bitmap image, Resources resources, Rect hitbox, Rect screen) {
+        super(image, resources, hitbox, screen);
         this.affectedByGrav = true;
     }
 

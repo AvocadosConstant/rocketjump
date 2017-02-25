@@ -1,5 +1,6 @@
 package codes.timhung.rocketjump;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -12,8 +13,8 @@ public class Rocket extends Sprite {
 
     public final double ROCKET_SPEED = 80;
     public boolean exists;
-    public Rocket(Bitmap image, Rect hitbox, Rect screen, double vx, double vy) {
-        super(image, hitbox, screen);
+    public Rocket(Bitmap image, Resources resources, Rect hitbox, Rect screen, double vx, double vy) {
+        super(image, resources, hitbox, screen);
         this.vx = vx * ROCKET_SPEED;
         this.vy = vy * ROCKET_SPEED;
         exists = true;

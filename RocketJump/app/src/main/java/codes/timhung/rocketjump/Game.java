@@ -53,7 +53,7 @@ public class Game {
         this.resources = resources;
         PLAT_SPACING = screen.height() / NUM_PLATS_PER_SCREEN;
 
-        player = new Player( null, new Rect(
+        player = new Player( null, resources, new Rect(
                         screen.width()/2,
                         screen.height() - 420,
                         screen.width()/2 + 160,
@@ -76,7 +76,7 @@ public class Game {
         for(int i = 0; i < num; i++) {
             if(platforms.size() > 0) nextY = (int) platforms.peekLast().getY() - PLAT_SPACING;
             platforms.add(new Platform(
-                    null, screen,
+                    null, resources, screen,
                     screen.left + rng.nextInt(screen.width() - width - 1) + 1,
                     nextY,
                     width, height));
@@ -100,7 +100,7 @@ public class Game {
             double vy = event.getY() - elevation - player.getHitbox().centerY();
             double length = Math.sqrt(vx * vx + vy * vy);
             rockets.add(new Rocket(
-                    null,
+                    null, resources,
                     new Rect(
                             player.getHitbox().centerX() - ROCKET_RADIUS,
                             player.getHitbox().centerY() - ROCKET_RADIUS,
@@ -179,7 +179,7 @@ public class Game {
                 Log.d("UPDATE", "Rocket is exploding");
                 rocket.exists = false;
                 explosions.add(new Explosion(
-                        null,
+                        null, resources,
                         new Rect(
                                 rocket.getHitbox().centerX() - EXPLOSION_RADIUS,
                                 rocket.getHitbox().centerY() - EXPLOSION_RADIUS,
@@ -198,7 +198,7 @@ public class Game {
                 Log.d("UPDATE", "Rocket is exploding");
                 rocket.exists = false;
                 explosions.add(new Explosion(
-                        null,
+                        null, resources,
                         new Rect(
                                 rocket.getHitbox().centerX() - EXPLOSION_RADIUS,
                                 rocket.getHitbox().centerY() - EXPLOSION_RADIUS,
